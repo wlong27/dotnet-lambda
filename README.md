@@ -15,3 +15,4 @@ hello world aws lambda
 
 ## Deploy 
 `dotnet lambda deploy-function --function-name HelloLambda`
+`dotnet lambda invoke-function --function-name HelloLambda --payload "Hello World!" `
