@@ -12,3 +12,6 @@ hello world aws lambda
 
 # Create .NET Project
 `dotnet new lambda.EmptyFunction -n HelloLambda`
+
+## Deploy 
+`dotnet lambda deploy-function --function-name HelloLambda`
