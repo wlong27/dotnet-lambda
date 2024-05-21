@@ -6,6 +6,11 @@ hello world aws lambda
 dotnet new install "Amazon.Lambda.Templates::*"
 ```
 
+# AWS SSO
+```bash
+aws configure sso
+aws configure list-profiles
+```
 # AWS Extensions 
 .NET CLI specifically focuses on Lambda functions and is invoked as a .NET tool 
 
