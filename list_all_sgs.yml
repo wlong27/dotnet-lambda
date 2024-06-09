@@ -10,6 +10,9 @@
           region: "{{ aws_region }}"
           profile: "{{ aws_profile }}"
       register: sg_info
+    # - name: Debug security group information
+    #   debug:
+    #     var: sg_info
 
     - name: Gather information about all instances per security group
       amazon.aws.ec2_instance_info:
@@ -24,6 +27,7 @@
             {% for sg in sg_info.security_groups %}
             {
               "id": "{{ sg.group_id }}",
+              "name": "{{ sg.group_name }}",
               "instances": [
                 {% for instance in ec2_info.instances if sg.group_id in instance.security_groups | map(attribute='group_id') %}
                 {"id": "{{ instance.instance_id }}"},
@@ -36,4 +40,4 @@
     - name: Render the table to a file
       template:
         src: ec2_instances_table.j2
-        dest: "/workspaces/dotnet-lambda/table_of_instances.txt"
+        dest: "/workspaces/dotnet-lambda/table_of_instances.csv"

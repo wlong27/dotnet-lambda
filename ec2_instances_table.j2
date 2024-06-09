@@ -1,10 +1,10 @@
-Security Group | Instances
+"Security Group ID","Security Group Name","Instance ID"
 {% for sg in security_groups %}
 {% if sg.instances %}
 {% for instance in sg.instances %}
-{{ sg.id }} | {{ instance.id }}
+"{{ sg.id }}","{{ sg.name }}","{{ instance.id }}"
 {% endfor %}
 {% else %}
-{{ sg.id }} | No instances attached
+"{{ sg.id }}","{{ sg.name }}","No instances attached"
 {% endif %}
 {% endfor %}
