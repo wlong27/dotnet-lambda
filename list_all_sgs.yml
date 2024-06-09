@@ -33,19 +33,33 @@
                 {"id": "{{ instance.instance_id }}"},
                 {% endfor %}
               ],
-              "inbound_rules": [
+             "inbound_rules": [
                 {% for rule in sg.ip_permissions %}
                 {
-                  "ports": "{{ rule.ip_protocol | default('all') }}",
-                  "sources": "{{ rule.cidr_ip | default('0.0.0.0/0') }}"
+                  "from_port": "{{ rule.from_port | default('all') }}",
+                  "to_port": "{{ rule.to_port | default('all') }}",
+                  "protocol": "{{ rule.ip_protocol | default('all') }}",
+                  "sources": [
+                    {% for source in rule.ip_ranges %}
+                    "{{ source.cidr_ip }}"
+                    {% if not loop.last %},{% endif %}
+                    {% endfor %}
+                  ]
                 },
                 {% endfor %}
               ],
               "outbound_rules": [
                 {% for rule in sg.ip_permissions_egress %}
                 {
-                  "ports": "{{ rule.ip_protocol | default('all') }}",
-                  "destinations": "{{ rule.cidr_ip | default('0.0.0.0/0') }}"
+                  "from_port": "{{ rule.from_port | default('all') }}",
+                  "to_port": "{{ rule.to_port | default('all') }}",
+                  "protocol": "{{ rule.ip_protocol | default('all') }}",
+                  "destinations": [
+                    {% for dest in rule.ip_ranges %}
+                    "{{ dest.cidr_ip }}"
+                    {% if not loop.last %},{% endif %}
+                    {% endfor %}
+                  ]
                 },
                 {% endfor %}
               ]
@@ -53,6 +67,10 @@
             {% endfor %}
           ]
 
+    - name: Debug security group information
+      debug:
+        var: security_groups
+        
     - name: Render the table to a file
       template:
         src: ec2_instances_table.j2

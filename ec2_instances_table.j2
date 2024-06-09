@@ -1,26 +1,13 @@
 "Security Group ID","Security Group Name","Instance ID","Inbound Rules","Outbound Rules"
 {% for sg in security_groups %}
-  {% set inbound_rules = [] %}
-  {% for rule in sg.inbound_rules %}
-    {% set ports = rule.ports | default('all') %}
-    {% set sources = rule.sources | default('0.0.0.0/0') %}
-    {% set inbound_rule = "Ports: " ~ ports ~ ", Sources: " ~ sources %}
-    {% set inbound_rules = inbound_rules + [inbound_rule] %}
-  {% endfor %}
-
-  {% set outbound_rules = [] %}
-  {% for rule in sg.outbound_rules %}
-    {% set ports = rule.ports | default('all') %}
-    {% set destinations = rule.destinations | default('0.0.0.0/0') %}
-    {% set outbound_rule = "Ports: " ~ ports ~ ", Destinations: " ~ destinations %}
-    {% set outbound_rules = outbound_rules + [outbound_rule] %}
-  {% endfor %}
+  {% set inbound_rules = sg.inbound_rules %}
+  {% set outbound_rules = sg.outbound_rules %}
 
   {% if sg.instances %}
     {% for instance in sg.instances %}
-"{{ sg.id }}","{{ sg.name }}","{{ instance.id }}","{{ inbound_rules | join('\n') }}","{{ outbound_rules | join('\n') }}"
+"{{ sg.id }}","{{ sg.name }}","{{ instance.id }}","{{ inbound_rules }}","{{ outbound_rules }}"
     {% endfor %}
   {% else %}
-"{{ sg.id }}","{{ sg.name }}","No instances attached","{{ inbound_rules | join('\n') }}","{{ outbound_rules | join('\n') }}"
+"{{ sg.id }}","{{ sg.name }}","No instances attached","{{ inbound_rules }}","{{ outbound_rules }}"
   {% endif %}
 {% endfor %}
