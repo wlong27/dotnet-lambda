@@ -1,0 +1,10 @@
+Security Group | Instances
+{% for sg in security_groups %}
+{% if sg.instances %}
+{% for instance in sg.instances %}
+{{ sg.id }} | {{ instance.id }}
+{% endfor %}
+{% else %}
+{{ sg.id }} | No instances attached
+{% endif %}
+{% endfor %}

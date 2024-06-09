@@ -1,0 +1,39 @@
+---
+- name: List all Security Groups and their attached Instances
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+  - vars.yml
+  tasks:
+    - name: Gather information about all security groups
+      amazon.aws.ec2_group_info:
+          region: "{{ aws_region }}"
+          profile: "{{ aws_profile }}"
+      register: sg_info
+
+    - name: Gather information about all instances per security group
+      amazon.aws.ec2_instance_info:
+        region: "{{ aws_region }}"
+        profile: "{{ aws_profile }}"
+      register: ec2_info
+
+    - name: Prepare data for the template
+      set_fact:
+        security_groups: >
+          [
+            {% for sg in sg_info.security_groups %}
+            {
+              "id": "{{ sg.group_id }}",
+              "instances": [
+                {% for instance in ec2_info.instances if sg.group_id in instance.security_groups | map(attribute='group_id') %}
+                {"id": "{{ instance.instance_id }}"},
+                {% endfor %}
+              ]
+            },
+            {% endfor %}
+          ]
+
+    - name: Render the table to a file
+      template:
+        src: ec2_instances_table.j2
+        dest: "/workspaces/dotnet-lambda/table_of_instances.txt"

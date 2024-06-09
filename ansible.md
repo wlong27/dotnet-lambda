@@ -66,3 +66,6 @@ aws configure
 
 #### 9. Create and run the Ansible Playbook
 ansible-playbook list_ec2_instances.yml
+ansible-playbook list_all_sgs.yml
+
+Remember to set the aws region and profile
