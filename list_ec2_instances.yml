@@ -1,0 +1,13 @@
+---
+- name: List EC2 instances using SSO
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Get all EC2 instances
+      community.aws.ec2_instance_info:
+        region: "{{ lookup('env', 'AWS_REGION') }}"
+      register: ec2_instances
+
+    - name: Print EC2 instances
+      debug:
+        var: ec2_instances.instances
