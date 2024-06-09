@@ -10,9 +10,9 @@
           region: "{{ aws_region }}"
           profile: "{{ aws_profile }}"
       register: sg_info
-    # - name: Debug security group information
-    #   debug:
-    #     var: sg_info
+    - name: Debug security group information
+      debug:
+        var: sg_info
 
     - name: Gather information about all instances per security group
       amazon.aws.ec2_instance_info:
@@ -31,6 +31,22 @@
               "instances": [
                 {% for instance in ec2_info.instances if sg.group_id in instance.security_groups | map(attribute='group_id') %}
                 {"id": "{{ instance.instance_id }}"},
+                {% endfor %}
+              ],
+              "inbound_rules": [
+                {% for rule in sg.ip_permissions %}
+                {
+                  "ports": "{{ rule.ip_protocol | default('all') }}",
+                  "sources": "{{ rule.cidr_ip | default('0.0.0.0/0') }}"
+                },
+                {% endfor %}
+              ],
+              "outbound_rules": [
+                {% for rule in sg.ip_permissions_egress %}
+                {
+                  "ports": "{{ rule.ip_protocol | default('all') }}",
+                  "destinations": "{{ rule.cidr_ip | default('0.0.0.0/0') }}"
+                },
                 {% endfor %}
               ]
             },
