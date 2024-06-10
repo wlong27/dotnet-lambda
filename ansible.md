@@ -56,16 +56,14 @@ Execute your playbook using the `ansible-playbook` command.
 ansible-playbook -i hosts.ini playbook.yml
 ```
 
-### 7. Explore Ansible Modules
-Ansible has a wide range of modules to perform various tasks. For example, to install a package, you can use the `apt` module (for Debian-based systems) or the `yum` module (for Red Hat-based systems).
-
-
+```bash
 pip install boto3
 ansible-galaxy collection install community.aws
 aws configure
-
+```
 #### 9. Create and run the Ansible Playbook
+```bash
 ansible-playbook list_ec2_instances.yml
-ansible-playbook list_all_sgs.yml
-
+ansible-playbook list_all_sgs.ym
+```
 Remember to set the aws region and profile
